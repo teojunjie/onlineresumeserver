@@ -38,5 +38,5 @@ app.post('/submitContactDetails' , function (req, res , next) {
 	})
 	.then(message => console.log(message.sid));
 
-	res.status(200).json("Message send to Phone")
+	res.status(200).send('OK')
 })
