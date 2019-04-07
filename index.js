@@ -20,5 +20,23 @@ app.get('/', function (req, res, next) {
 })
 app.post('/submitContactDetails' , function (req, res , next) {
 	console.log(req.body)
-	res.status(200).json(req.body)
+	var contactName = req.body.contactName
+	var contactEmail = req.body.contactEmail
+	var contactSubject = req.body.contactSubject
+	var contactMessage = req.body.contactMessage
+
+	const accountSid = process.env.TWILIOSID;
+	const authToken = process.env.TWILIOAUTHTOKEN;
+	const client = require('twilio')(accountSid, authToken);
+
+	var messageData = contactName + ' with email : ' + contactEmail + ' has contacted you with subject : ' + contactSubject + ' with message : ' + contactMessage
+	client.messages
+	.create({
+		body:  messageData,
+		from: '+12028318304',
+		to: '+6581184502'
+	})
+	.then(message => console.log(message.sid));
+
+	res.status(200).json("Message send to Phone")
 })
