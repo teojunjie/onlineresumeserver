@@ -2,6 +2,7 @@ var CommentModel = require('./comments')
 
 exports.addComment = function(req, res, next) {
     var data = req.body.comment
+    console.log(req.body)
     var currentdate = new Date();
     var currentdateString = currentdate.getDate() + "/"
                     + (currentdate.getMonth()+1)  + "/" 
@@ -16,14 +17,14 @@ exports.addComment = function(req, res, next) {
     })
     newComment.save((err) => {
         if (err) {
-            res.json({'Updated' : false})
-            next (err);
+            return res.redirect('./getAllComments')
         }
-        return res.json({'Updated' : true})
+        return res.redirect('./getAllComments')
     })
 }
 
 exports.addCommentReply = function(req, res, next) {
+    console.log(req.body)
     var commentDateString = req.body.commentDateString
     console.log(commentDateString)
     var reply = req.body.reply
@@ -33,19 +34,20 @@ exports.addCommentReply = function(req, res, next) {
     }}
     CommentModel.findOneAndUpdate({dateCreated : commentDateString}, update,(err, result) => {
         if (err) {
-            res.json({'Updated' : false})
-            next(err)            
+            return res.redirect('./getAllComments')     
         } 
         if (!result) {
-            return res.json({'Updated' : false})   
+            return res.redirect('./getAllComments')
         }
-        return res.json({'Updated' : true})
+        return res.redirect('./getAllComments')
     })
 }
 
 exports.getAllComments = function(req, res, next) {
     CommentModel.find().exec((err, result)=> {
         if (err) next (err)
-        return res.json({data : result})
+        console.log(result)
+
+        return res.render('comments', {comments : result});
     })
 }

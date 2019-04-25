@@ -4,6 +4,7 @@ var dotenv = require('dotenv');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var commentController = require('./commentController')
+var path = require('path')
 
 // Configure env variables
 dotenv.config();
@@ -15,12 +16,14 @@ db.once('open', function() {
 	console.log('Connected to database successfully')
 })
 
-
+// view engine setup
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'ejs')
 
 //Middlewares
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
-
+app.use(express.static(path.join(__dirname, 'public')))
 app.set('port', process.env.PORT);
 var server = app.listen(app.get('port'), function() {
 	console.log('Online Resume Teo Jun Jie Server listening on port ' + server.address().port);
@@ -54,4 +57,4 @@ app.post('/submitContactDetails' , function (req, res , next) {
 
 app.get('/getAllComments', commentController.getAllComments)
 app.post('/addComment' , commentController.addComment)
-app.put('/addReply', commentController.addCommentReply)
+app.post('/addReply', commentController.addCommentReply)
