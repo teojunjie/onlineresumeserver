@@ -2,9 +2,20 @@ var express = require('express');
 var app = express();
 var dotenv = require('dotenv');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+var commentController = require('./commentController')
 
 // Configure env variables
 dotenv.config();
+
+mongoose.connect(process.env.DBURL, {useNewUrlParser : true})
+var db = mongoose.connection;
+db.on('error' , console.error.bind(console, 'connection error'));
+db.once('open', function() {
+	console.log('Connected to database successfully')
+})
+
+
 
 //Middlewares
 app.use(bodyParser.json());
@@ -40,3 +51,7 @@ app.post('/submitContactDetails' , function (req, res , next) {
 
 	res.status(200).send('OK')
 })
+
+app.get('/getAllComments', commentController.getAllComments)
+app.post('/addComment' , commentController.addComment)
+app.put('/addReply', commentController.addCommentReply)
