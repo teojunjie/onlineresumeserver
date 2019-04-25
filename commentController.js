@@ -46,6 +46,6 @@ exports.addCommentReply = function(req, res, next) {
 exports.getAllComments = function(req, res, next) {
     CommentModel.find().exec((err, result)=> {
         if (err) next (err)
-        return res.json(result)
+        return res.json({data : result})
     })
 }
